@@ -1,0 +1,45 @@
+version: '3.9'
+
+name: webdev
+
+services:
+    traefik:
+        container_name: ${COMPOSE_PROJECT_NAME}_traefik
+        image: traefik:v3.0
+        restart: unless-stopped
+        security_opt:
+            - no-new-privileges:true
+        networks:
+            - proxy
+        ports:
+            - '80:80'
+            - '443:443'
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - .docker/traefik/traefik.yml:/traefik.yml:ro
+            - .docker/traefik/config:/config:ro
+            - .docker/traefik/certs:/etc/certs:ro
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.traefik.entrypoints=https
+            - traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DOMAIN:-traefik.webdev.local}`)
+            - traefik.http.routers.traefik.tls=true
+            - traefik.http.routers.traefik.service=api@internal
+
+    dnsmasq:
+        container_name: ${COMPOSE_PROJECT_NAME}_dnsmasq
+        build:
+            context: .docker/dnsmasq
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        cap_add:
+            - NET_ADMIN
+        ports:
+            - '53:53/tcp'
+            - '53:53/udp'
+        volumes:
+            - .docker/dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
+
+networks:
+    proxy:
+        external: true

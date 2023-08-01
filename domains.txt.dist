@@ -1,0 +1,7 @@
+*.local
+*.dev2
+*.localhost
+*.test
+*.docker
+127.0.0.1
+::1

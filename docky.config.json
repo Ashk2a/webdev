@@ -1,0 +1,38 @@
+{
+    "debug": false,
+    "hooks": [
+        {
+            "type": "before",
+            "entry": "scripts/check.sh",
+            "includes": ["up", "restart"]
+        },
+        {
+            "type": "before",
+            "entry": "scripts/certs.sh",
+            "includes": ["up", "restart"]
+        }
+    ],
+    "commands": {
+        "internals": ["up", "stop", "down", "restart", "ps", "logs", "exec"],
+        "customs": [
+            {
+                "type": "host",
+                "entry": "scripts/check.sh",
+                "names": ["check"],
+                "description": "Check your project setup"
+            },
+            {
+                "type": "host",
+                "entry": "scripts/certs.sh",
+                "names": ["certs"],
+                "description": "Regenerate SSL certificates"
+            },
+            {
+                "type": "host",
+                "entry": "scripts/mkcert.sh",
+                "names": ["mkcert"],
+                "description": "Mkcert binary"
+            }
+        ]
+    }
+}
