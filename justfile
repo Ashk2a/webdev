@@ -15,8 +15,8 @@ certs:
   ./scripts/certs.sh
 
 # Interact with mkcert binary
-mkcert:
-    ./scripts/mkcert.sh
+mkcert *args='':
+    ./scripts/mkcert.sh $@
 
 # Up containers
 @up *args='':
