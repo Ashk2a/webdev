@@ -14,11 +14,6 @@ source ${SCRIPTS_DIR}/setup/domains.sh
 # Source .env
 source .env >/dev/null 2>&1
 
-# For mac need to create resolver in /etc/resolver for all TLD
-if [ "$MACHINE" == "darwin" ]; then
-    source ${SCRIPTS_DIR}/setup/darwin/tld.sh
-fi
-
 # Setup docker
 source ${SCRIPTS_DIR}/setup/docker.sh
 

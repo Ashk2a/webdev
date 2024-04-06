@@ -26,20 +26,6 @@ services:
             - traefik.http.routers.traefik.tls=true
             - traefik.http.routers.traefik.service=api@internal
 
-#    dnsmasq:
-#        container_name: ${COMPOSE_PROJECT_NAME}_dnsmasq
-#        build:
-#            context: .docker/dnsmasq
-#            dockerfile: Dockerfile
-#        restart: unless-stopped
-#        cap_add:
-#            - NET_ADMIN
-#        ports:
-#            - '53:53/tcp'
-#            - '53:53/udp'
-#        volumes:
-#            - .docker/dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
-
 networks:
     proxy:
         external: true
