@@ -1,12 +1,9 @@
-version: '3.9'
-
 name: webdev
 
 services:
     traefik:
         container_name: ${COMPOSE_PROJECT_NAME}_traefik
         image: traefik:v3.0
-        restart: unless-stopped
         security_opt:
             - no-new-privileges:true
         networks:
