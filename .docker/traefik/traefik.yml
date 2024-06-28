@@ -15,6 +15,8 @@ entryPoints:
                     scheme: https
     https:
         address: ":443"
+    smtp:
+        address: ":25"
 
 serversTransport:
     insecureSkipVerify: true

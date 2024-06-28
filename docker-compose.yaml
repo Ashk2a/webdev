@@ -17,12 +17,44 @@ services:
             - .docker/traefik/config:/config:ro
             - .docker/traefik/certs:/etc/certs:ro
         labels:
-            - traefik.enable=true
-            - traefik.http.routers.traefik.entrypoints=https
-            - traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DOMAIN:-traefik.local}`)
-            - traefik.http.routers.traefik.tls=true
-            - traefik.http.routers.traefik.service=api@internal
+            traefik.enable: true
+            traefik.http.routers.traefik.entrypoints: https
+            traefik.http.routers.traefik.rule: Host(`${TRAEFIK_DOMAIN:-traefik.local}`)
+            traefik.http.routers.traefik.tls: true
+            traefik.http.routers.traefik.service: api@internal
+    mailpit:
+        container_name: ${COMPOSE_PROJECT_NAME}_mailpit
+        image: axllent/mailpit
+        volumes:
+            - mailpit:/data
+        environment:
+            TZ: ${TZ:-Europe/Paris}
+            MP_DATA_FILE: /data/mailpit.db
+            MP_SMTP_BIND_ADDR: 0.0.0.0:25
+            MP_UI_BIND_ADDR: 0.0.0.0:80
+            MP_MAX_MESSAGES: 1000
+            MP_SMTP_AUTH_ACCEPT_ANY: true
+            MP_SMTP_AUTH_ALLOW_INSECURE: true
+        networks:
+            - proxy
+        labels:
+            traefik.enable: true
+            traefik.docker.network: proxy
+            # SMTP
+            traefik.tcp.services.smtp.loadbalancer.server.port: 25
+            traefik.tcp.routers.smtp.rule: HostSNI(`*`)
+            traefik.tcp.routers.smtp.entryPoints: smtp
+            traefik.tcp.routers.smtp.service: smtp
+            # HTTPS
+            traefik.http.services.mailpit.loadbalancer.server.port: 80
+            traefik.http.routers.mailpit.tls: true
+            traefik.http.routers.mailpit.rule: Host(`${MAILPIT_DOMAIN:-mail.local}`)
+            traefik.http.routers.mailpit.entrypoints: https
+            traefik.http.routers.mailpit.service: mailpit
 
 networks:
     proxy:
         external: true
+
+volumes:
+    mailpit:
